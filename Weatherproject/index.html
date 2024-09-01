@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather app</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/2396042c63.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="card">
+      <div class="search">
+        <input type="text" placeholder="Enter city name" spellcheck="false" />
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+      <div class="error">
+        <p>Invalid city name</p>
+      </div>
+
+      <div class="weather">
+        <img
+          src="https://w7.pngwing.com/pngs/546/46/png-transparent-weather-forecasting-severe-weather-storm-weather-free-text-heart-logo-thumbnail.png"
+          class="Weather-icon"
+        />
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">New York</h2>
+        <div class="details">
+
+          <div class="col">
+           <div>
+            <img
+            src="https://static.vecteezy.com/system/resources/thumbnails/012/806/409/small/3d-cartoon-weather-rain-sign-of-dark-clouds-with-raindrops-isolated-on-transparent-background-3d-render-illustration-png.png"
+            class="humidity-icon"
+          />
+           </div>
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+
+          <div class="col">
+            <div>
+                <img
+              src="https://static.vecteezy.com/system/resources/thumbnails/011/338/277/small/blowing-wind-sign-png.png"
+              class="wind-icon"
+            />
+            </div>
+            <div>
+              <p class="Wind">15 Km/h</p>
+              <p>Wind Speed</p>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const apikey = "d1845658f92b31c64bd94f06f7188c9c";
+        const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
+
+        const searchbox = document.querySelector(".search input");
+        const searchbtn = document.querySelector(".search button");
+        const weathericon = document.querySelector(".Weather-icon")
+
+        async function checkweather(city) {
+            const response = await fetch(apiurl + city + `&appid=${apikey}`);
+
+            if(response.status == 404){
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+            }
+            else{
+                var data = await response.json();   
+
+            // console.log(data);
+
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp)  + "°C";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".Wind").innerHTML = data.wind.speed + "Km/h";
+
+            if(data.weather[0].main == "clouds"){
+                weathericon.src = "https://png.pngtree.com/png-clipart/20240316/original/pngtree-realistic-cloud-or-clouds-element-png-image_14604498.png"
+            }
+            else if(data.weather[0].main == "Clear"){
+                weathericon.src = "https://img.lovepik.com/free-png/20211125/lovepik-the-blue-sky-and-white-clouds-png-image_401122492_wh1200.png"
+            }
+            else if(data.weather[0].main == "Rain"){
+                weathericon.src = "https://static.vecteezy.com/system/resources/thumbnails/012/806/409/small/3d-cartoon-weather-rain-sign-of-dark-clouds-with-raindrops-isolated-on-transparent-background-3d-render-illustration-png.png"
+            }
+             else if(data.weather[0].main == "Drizzle"){
+                weathericon.src = "https://cdn3d.iconscout.com/3d/premium/thumb/rainy-day-3d-icon-download-in-png-blend-fbx-gltf-file-formats--rain-cloud-sun-weather-pack-icons-5753017.png"
+            }
+            else if(data.weather[0].main == "Mist"){
+                weathericon.src = "https://thumbs.dreamstime.com/b/fog-smoke-isolated-transparent-special-effect-white-vector-cloudiness-mist-smog-background-png-illustration-210129340.jpg"
+            }
+            //  by this there will only show the input fiels and search field 
+            document.querySelector(".weather").style.display = "block";
+            document.querySelector(".error").style.display = "none";
+
+            }
+        }
+        searchbtn.addEventListener("click" ,()=>{
+            checkweather(searchbox.value); 
+        })
+    </script>
+  </body>
+</html>
